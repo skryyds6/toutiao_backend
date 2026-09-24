@@ -1,0 +1,30 @@
+[project]
+name = "toutiao-backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "skryyds6", email = "3287064984@qq.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "aiomysql>=0.3.2",
+    "fastapi[standard]>=0.141.1",
+    "pydantic-settings>=2.15.0",
+    "sqlalchemy>=2.0.54",
+    "uvicorn[standard]>=0.53.0",
+]
+
+[project.scripts]
+toutiao-backend = "toutiao_backend:main"
+
+[tool.fastapi]
+entrypoint = "toutiao_backend.main:app"
+
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"

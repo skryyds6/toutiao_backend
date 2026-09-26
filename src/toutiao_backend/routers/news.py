@@ -37,10 +37,34 @@ async def get_news_list(
         has_more=has_more
     )
 
-@router.get("/datail", response_model=Result)
-async def get_news_detail(new_id:int,db = Depends(get_db)):
-    new_detail = await news.get_news_detail(db,new_id)
+
+@router.get("/detail", response_model=Result)
+async def get_news_detail(
+    id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    new_detail = await news.get_news_detail(db, id)
     if not new_detail:
         raise HTTPException(status_code=404,detail="此新闻不存在")
-    await news.increase_news_views(db,new_id)
-    return Result.success(new_detail)
+    await news.increase_news_views(db, id)
+    # 新闻详情-相关推荐
+    related_news = await news.get_related_news(
+        db,
+        new_detail.id,
+        new_detail.category_id
+    )
+ 
+    data = {
+        "id": new_detail.id,
+        "title": new_detail.title,
+        "description": new_detail.description,
+        "content": new_detail.content,
+        "image": new_detail.image,
+        "author": new_detail.author,
+        "publishTime": new_detail.publish_time,
+        "categoryId": new_detail.category_id,
+        "views": new_detail.views + 1,
+        "relatedNews": related_news
+    }
+ 
+    return Result.success(data)

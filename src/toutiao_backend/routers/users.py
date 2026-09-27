@@ -3,8 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from toutiao_backend.common.result import Result
 from toutiao_backend.config.db_conf import get_db
-from ..schemas.users import UserRequest
+from toutiao_backend.utils.response import success_response
+
 from ..crud import users
+from ..schemas.users import UserAuthResponse, UserInfoResponse, UserRequest
+
 router = APIRouter(prefix="/api/users",tags=["users"])
 compat_router = APIRouter(prefix="/api/user", tags=["users"])
 
@@ -20,16 +23,9 @@ async def register(user_data:UserRequest,db:AsyncSession = Depends(get_db)):
     user = await users.create_user(db, user_data)
  # 生成 Token
     token = await users.create_token(db, user.id)
-    return {
-        "code": 200,
-        "message": "注册成功",
-        "data": {
-            "token": token,
-            "userInfo": {
-                "id": user.id,
-                "username": user_data.username,
-                "bio": user.bio,
-                "avatar": user.avatar
-            }
-        }
-    }
+
+
+    ## 构建响应数据：token + 用户信息
+    # model_validate: 将 ORM 模型对象转换为 Pydantic 响应模型
+    response_data = UserAuthResponse(token=token, userInfo=UserInfoResponse.model_validate(user))
+    return success_response(data=response_data)

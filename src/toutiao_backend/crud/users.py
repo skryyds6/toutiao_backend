@@ -1,13 +1,14 @@
 
 import datetime
-
 import uuid
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from ..models.users import User, UserToken
 from ..schemas.users import UserRequest
 from ..utils import security
+
 
 async def get_user_by_username(db:AsyncSession,username: str):
     stmt =  select(User).where(User.username == username)

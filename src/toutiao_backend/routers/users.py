@@ -6,7 +6,9 @@ from toutiao_backend.config.db_conf import get_db
 from ..schemas.users import UserRequest
 from ..crud import users
 router = APIRouter(prefix="/api/users",tags=["users"])
+compat_router = APIRouter(prefix="/api/user", tags=["users"])
 
+@compat_router.post("/register", include_in_schema=False)
 @router.post("/register")
 async def register(user_data:UserRequest,db:AsyncSession = Depends(get_db)):
 

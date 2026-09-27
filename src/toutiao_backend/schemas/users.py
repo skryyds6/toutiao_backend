@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
- 
+
+from pydantic import BaseModel, ConfigDict, Field
+
+
 # 用户请求
 class UserRequest(BaseModel):
     username: str
